@@ -275,9 +275,7 @@ document.addEventListener("touchstart", e => {
           playerExitAnim = true;
           // 少し遅延後リセット
           setTimeout(() => {
-            started = false;
-            startOverlay.style.display = "block";
-            resetGame();
+            location.reload(); 
           }, 1000);
         }
       }
