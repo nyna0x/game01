@@ -179,6 +179,15 @@ canvas.addEventListener("touchend", (e) => {
     }
   });
   document.addEventListener("keyup", e => keys[e.key] = false);
+  
+  // タッチでもゲーム開始できるようにする
+document.addEventListener("touchstart", e => {
+  if (!started) {
+    startOverlay.style.display = "none";
+    started = true;
+    startTime = performance.now();
+    resetGame();
+  }
 
   function resetGame() {
     // ゲーム初期化（タイトルから再開用）
