@@ -85,10 +85,10 @@
   <div id="title">助けに駆けつける！</div>
   <canvas id="gameCanvas" width="800" height="400"></canvas>
   <div id="startOverlay">
-    <div id="startText">PRESS SPACE BUTTON</div>
+    <div id="startText">PRESS SPACE BUTTON（OR TOUCH）</div>
   </div>
   <div id="instructions">
-    操作：↑キーで上、↓キーで下に移動<br>
+    操作：↑キーまたは画面左タッチで上、↓キーまたは画面右タッチで下に移動<br>
     プレイヤー：<img src="image1.png">　障害物：<img src="image2.png"><img src="image3.png"><img src="image4.png"><img src="image5.png">
   </div>
   <div id="credit">©Nyna</div>
@@ -128,6 +128,7 @@
   let gameClear = false;
   let spawnTimer = 0;
   let frameCount = 0;
+  let touchDirection = null;
   const keys = {};
 
   let distance = 2800;
@@ -139,19 +140,23 @@
   
   let touchY = null;
 
-canvas.addEventListener("touchstart", (e) => {
+canvas.addEventListener("touchstart", handleTouch, { passive: true });
+canvas.addEventListener("touchmove", handleTouch, { passive: true });
+canvas.addEventListener("touchend", () => {
+  touchDirection = null;
+}, { passive: true });
+
+function handleTouch(e) {
   if (e.touches.length > 0) {
-    touchY = e.touches[0].clientY;
+    const touchX = e.touches[0].clientX;
+    if (touchX < window.innerWidth / 2) {
+      touchDirection = "up";   // ← 画面左タッチ：上移動
+    } else {
+      touchDirection = "down"; // ← 画面右タッチ：下移動
+    }
   }
-});
-canvas.addEventListener("touchmove", (e) => {
-  if (e.touches.length > 0) {
-    touchY = e.touches[0].clientY;
-  }
-});
-canvas.addEventListener("touchend", (e) => {
-  touchY = null;
-});
+}
+
 
 
   // 追加フラグ：ゲームプレイ終了後のエンディング開始判定
@@ -280,16 +285,16 @@ document.addEventListener("touchstart", e => {
     }
 
     // ゲームプレイ中の通常処理 -----------------------------------
-      if (!player.hit) {
-       if (keys["ArrowUp"] || keys["w"] || (touchY !== null && touchY < window.innerHeight / 2)) {
-       player.dy = -5;
-        } else if (keys["ArrowDown"] || keys["s"] || (touchY !== null && touchY >= window.innerHeight / 2)) {
-       player.dy = 5;
-      } else {
-      player.dy = 0;
-      }
+if (!player.hit) {
+  if (keys["ArrowUp"] || keys["w"] || touchDirection === "up") {
+    player.dy = -5;
+  } else if (keys["ArrowDown"] || keys["s"] || touchDirection === "down") {
+    player.dy = 5;
+  } else {
+    player.dy = 0;
+  }
 
-      player.y += player.dy;
+  player.y += player.dy;
 
       if (player.y < 0) player.y = 0;
       if (player.y + player.height > canvas.height) player.y = canvas.height - player.height;
