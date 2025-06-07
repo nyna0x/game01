@@ -177,10 +177,8 @@ canvas.addEventListener("touchend", (e) => {
       startTime = performance.now();
       resetGame();
     }
-  });
-  document.addEventListener("keyup", e => keys[e.key] = false);
-  
-  // タッチでもゲーム開始できるようにする
+    
+      // タッチでもゲーム開始できるようにする
 document.addEventListener("touchstart", e => {
   if (!started) {
     startOverlay.style.display = "none";
@@ -188,6 +186,9 @@ document.addEventListener("touchstart", e => {
     startTime = performance.now();
     resetGame();
   }
+  
+  });
+  document.addEventListener("keyup", e => keys[e.key] = false);
 
   function resetGame() {
     // ゲーム初期化（タイトルから再開用）
