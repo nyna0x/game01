@@ -169,26 +169,33 @@ canvas.addEventListener("touchend", (e) => {
   // タイトル再表示用にoverlayの操作用
   const startOverlay = document.getElementById("startOverlay");
 
-  document.addEventListener("keydown", e => {
-    keys[e.key] = true;
-    if (!started && e.key === " ") {
-      startOverlay.style.display = "none";
-      started = true;
-      startTime = performance.now();
-      resetGame();
-    }
-    
-      // タッチでもゲーム開始できるようにする
+// ゲーム開始関数（共通）
+function startGame() {
+  startOverlay.style.display = "none";
+  started = true;
+  startTime = performance.now();
+  resetGame();
+}
+
+// キーボード操作
+document.addEventListener("keydown", e => {
+  keys[e.key] = true;
+  if (!started && e.key === " ") {
+    startGame();
+  }
+});
+
+document.addEventListener("keyup", e => {
+  keys[e.key] = false;
+});
+
+// タッチ操作でゲーム開始
 document.addEventListener("touchstart", e => {
   if (!started) {
-    startOverlay.style.display = "none";
-    started = true;
-    startTime = performance.now();
-    resetGame();
+    startGame();
   }
-  
-  });
-  document.addEventListener("keyup", e => keys[e.key] = false);
+}, { passive: true });
+
 
   function resetGame() {
     // ゲーム初期化（タイトルから再開用）
